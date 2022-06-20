@@ -1,21 +1,20 @@
 import type { NextPage } from "next"
-import { useSession, signOut, signIn } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import Head from "next/head"
-import { useEffect, useState } from "react"
+import { CartSlice } from "../../store/createCartSlice"
+import { useStore } from "../../store/useStore"
 import { trpc } from "../utils/trpc"
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["hello", { text: "from tRPC" }])
+  trpc.useQuery(["getProducts"])
+  const products = trpc.useQuery(["productsList"])
   const { data: session, status } = useSession()
+  const { state, cart } = useStore() as CartSlice
   // const exampleData = trpc.useQuery(["example"]);
   // const { invalidateQueries } = trpc.useContext()
   // const createExample = trpc.useMutation("create-example", {
   //   onSuccess: () => invalidateQueries("example"),
   // })
-
-  if (status === "authenticated") {
-    console.log(session.user)
-  }
 
   return (
     <>
@@ -29,35 +28,17 @@ const Home: NextPage = () => {
           Create <span className="text-blue-500">t3</span> App
         </h1>
 
-        <div className="w-fit">
-          <h3 className="mt-4 text-3xl">This Stack uses:-</h3>
-
-          <div className="py-6 text-2xl">
-            {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
+        <div className="w-full">
+          <div className="py-6 text-xl">
+            {products.data ? (
+              <p>{JSON.stringify(products.data)}</p>
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="py-6 text-2xl">
-            {/* <h1>Login</h1>
-            <input
-              type="text"
-              placeholder="Username"
-              onChange={e => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              onChange={e => setPassword(e.target.value)}
-            />
-            <button
-              onClick={() =>
-                signIn("credentials", {
-                  username: username,
-                  password: password,
-                })
-              }
-            >
-              Login
-            </button> */}
             <button onClick={() => signOut()}>Logout</button>
+
             {/* {exampleData.data ? (
               <div>
                 {exampleData.data.length === 0 ? (
