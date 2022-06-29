@@ -11,7 +11,7 @@ type UseStoreState = typeof initializeStore extends (
   ...args: never
 ) => UseBoundStore<infer T>
   ? T
-  : never
+  : CartSlice
 
 const getDefaultInitialState = (): CartSlice => ({
   state: "idle",

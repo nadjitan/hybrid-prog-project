@@ -9,8 +9,8 @@ export default function SignIn() {
   const [error, setError] = useState("")
 
   return (
-    <div className="w-full h-full grid place-items-center">
-      <div className="grid w-[300px] h-[500px] bg-slate-200">
+    <div className="grid h-full w-full place-items-center">
+      <div className="grid h-[500px] w-[300px] bg-slate-200">
         {error ?? <p>{error}</p>}
         <label>
           Username
@@ -42,8 +42,7 @@ export default function SignIn() {
                   setError("Wrong credentials")
                 }
               })
-          }}
-        >
+          }}>
           Sign in
         </button>
       </div>

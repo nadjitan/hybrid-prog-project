@@ -1,9 +1,9 @@
 import { GetState, SetState } from "zustand"
-import { Products } from "../src/pages/api/trpc/[trpc]"
+import { TProducts } from "../src/server/routers/product"
 
 export interface CartSlice {
   state: "idle" | "fetching" | "error"
-  cart: Products
+  cart: TProducts
 }
 
 const createProductSlice = (

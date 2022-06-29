@@ -1,4 +1,4 @@
-import { router } from "@trpc/server";
-import { Context } from "./context";
+import { router } from "@trpc/server"
+import { Context } from "./context"
 
-export const createRouter = () => router<Context>();
+export const createRouter = () => router<Context>()
