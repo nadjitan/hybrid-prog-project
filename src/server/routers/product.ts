@@ -10,9 +10,9 @@ import {
 } from "firebase/firestore"
 import { firestoreDB } from "../../../firebaseConfig"
 
-let products: TProduct[] = []
+let products: TProducts = []
 
-const Product = z.object({
+export const Product = z.object({
   id: z.string(),
   name: z.string(),
   price: z.number(),
@@ -43,7 +43,7 @@ export const productRouter = createRouter()
       return products
     },
   })
-  .query("delete", {
+  .mutation("delete", {
     input: z.object({
       id: z.string(),
     }),
@@ -53,13 +53,13 @@ export const productRouter = createRouter()
       )
     },
   })
-  .query("add", {
+  .mutation("create", {
     input: z.object({ product: Product }),
     async resolve({ input }) {
       await addDoc(productsCollection, input.product).then(d => console.log(d))
     },
   })
-  .query("edit", {
+  .mutation("edit", {
     input: z.object({
       id: z.string(),
       product: Product,

@@ -5,6 +5,7 @@ import { z } from "zod"
 import { createContext } from "../../../server/context"
 import { createRouter } from "../../../server/create-router"
 import { productRouter } from "../../../server/routers/product"
+import { receiptRouter } from "../../../server/routers/receipt"
 
 export const appRouter = createRouter()
   .transformer(superjson)
@@ -21,17 +22,7 @@ export const appRouter = createRouter()
     },
   })
   .merge("product.", productRouter)
-
-// .query("example", {
-//   async resolve({ ctx: { prisma } }) {
-//     return await prisma.example.findMany()
-//   },
-// })
-// .mutation("create-example", {
-//   async resolve({ ctx: { prisma } }) {
-//     return await prisma.example.create({ data: {} })
-//   },
-// })
+  .merge("receipt.", receiptRouter)
 
 export type AppRouter = typeof appRouter
 

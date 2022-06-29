@@ -7,8 +7,8 @@ import { useStore } from "../../store/useStore"
 import { trpc } from "../utils/trpc"
 
 const Home: NextPage = () => {
-  trpc.useQuery(["product.fetchAll"])
-  const products = trpc.useQuery(["product.list"])
+  // trpc.useQuery(["product.fetchAll"])
+  // const products = trpc.useQuery(["product.list"])
   const { data: session, status } = useSession()
   const { state, cart } = useStore()
   // const exampleData = trpc.useQuery(["example"]);
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
         </h1>
 
         <div className="w-full">
-          <div className="py-6 text-xl">
+          {/* <div className="py-6 text-xl">
             {products.data !== undefined && products.data.length > 0 ? (
               <>
                 <div
@@ -52,21 +52,9 @@ const Home: NextPage = () => {
             ) : (
               <p>Loading...</p>
             )}
-          </div>
+          </div> */}
           <div className="py-6 text-2xl">
             <button onClick={() => signOut()}>Logout</button>
-
-            {/* {exampleData.data ? (
-              <div>
-                {exampleData.data.length === 0 ? (
-                  <p className="text-2xl">No data available, create new!</p>
-                ) : (
-                  exampleData.data.map(({ id }) => <p key={id}>{id}</p>)
-                )}
-              </div>
-            ) : (
-              <p>Loading...</p>
-            )} */}
           </div>
           {/* <button
             onClick={() => createExample.mutate()}
