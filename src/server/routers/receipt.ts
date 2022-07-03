@@ -13,10 +13,15 @@ import { Product } from "./product"
 
 let receipts: TReceipts = []
 
+const CartProduct = z.object({
+  id: z.number(),
+  quantity: z.number(),
+  product: Product
+})
+
 const Receipt = z.object({
   id: z.string(),
-  products: z.array(Product),
-  count: z.number(),
+  products: z.array(CartProduct),
 })
 const Receipts = z.array(Receipt)
 
@@ -67,5 +72,5 @@ export const receiptRouter = createRouter()
     },
   })
 
-export type TReceipt = z.infer<typeof Receipt>
-export type TReceipts = z.infer<typeof Receipts>
+type TReceipt = z.infer<typeof Receipt>
+type TReceipts = z.infer<typeof Receipts>

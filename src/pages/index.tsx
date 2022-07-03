@@ -2,7 +2,6 @@ import type { NextPage } from "next"
 import { useSession, signOut } from "next-auth/react"
 import Head from "next/head"
 import Image from "next/image"
-import { CartSlice } from "../../store/createCartSlice"
 import { useStore } from "../../store/useStore"
 import { trpc } from "../utils/trpc"
 
@@ -13,6 +12,8 @@ const Home: NextPage = () => {
   const { state, cart } = useStore()
   // const exampleData = trpc.useQuery(["example"]);
   // const { invalidateQueries } = trpc.useContext()
+
+  // createExample.mutate()
   // const createExample = trpc.useMutation("create-example", {
   //   onSuccess: () => invalidateQueries("example"),
   // })
@@ -53,15 +54,6 @@ const Home: NextPage = () => {
               <p>Loading...</p>
             )}
           </div> */}
-          <div className="py-6 text-2xl">
-            <button onClick={() => signOut()}>Logout</button>
-          </div>
-          {/* <button
-            onClick={() => createExample.mutate()}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Create New Example
-          </button> */}
         </div>
       </div>
     </>

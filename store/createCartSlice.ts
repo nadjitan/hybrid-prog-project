@@ -3,40 +3,44 @@ import { TProduct, TProducts } from "../src/server/routers/product"
 
 export interface CartSlice {
   state: "idle" | "fetching" | "error"
-  cart: { product: TProduct; count: number }[]
+  cart: { product: TProduct; quantity: number }[]
 }
 
 const createProductSlice = (
   set: SetState<CartSlice>,
   get: GetState<CartSlice>
 ) => ({
-  cart: [],
+  cart: [] as CartSlice["cart"],
+
   addProduct: (product: TProduct) =>
     set(state => ({
-      cart: [...state.cart, { product, count: 1 }],
+      cart: [...state.cart, { product, quantity: 1 }],
     })),
+
   removeProduct: (id: string) =>
     set(state => ({
       cart: state.cart.filter(({ product }) => product.id !== id),
     })),
-  incrementCount: (id: string) =>
+
+  incrementQty: (id: string) =>
     set(state => ({
-      cart: state.cart.map(({ product, count }) => {
+      cart: state.cart.map(({ product, quantity }) => {
         if (product.id === id) {
-          return { product, count: count + 1 }
+          return { product, quantity: quantity + 1 }
         }
 
-        return { product, count }
+        return { product, quantity }
       }),
     })),
-  decrementCount: (id: string) =>
+
+  decrementQty: (id: string) =>
     set(state => ({
-      cart: state.cart.map(({ product, count }) => {
+      cart: state.cart.map(({ product, quantity }) => {
         if (product.id === id) {
-          if (count > 1) return { product, count: count - 1 }
+          if (quantity > 1) return { product, quantity: quantity - 1 }
         }
 
-        return { product, count }
+        return { product, quantity }
       }),
     })),
 })
