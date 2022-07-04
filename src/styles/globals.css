@@ -2,10 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Poppins Regular";
+  src: url(../../public/fonts/p/Poppins-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Poppins Medium";
+  src: url(../../public/fonts/p/Poppins-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Poppins Bold";
+  src: url(../../public/fonts/h1/Poppins-Bold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Anaheim";
+  src: url(../../public/fonts/h2/Anaheim.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Cascadia Code";
+  src: url(../../public/fonts/code/CascadiaCode.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Rubik";
+  src: url(../../public/fonts/h2/Rubik.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Prohibition";
+  src: url(../../public/fonts/h2/Prohibition-Regular.ttf) format("truetype");
+}
+
+:root {
+  --primary: rgb(79, 220, 161);
+  --secondary: rgb(51, 171, 160);
+  --tertiary: rgb(51, 171, 160);
+  --background: rgb(245, 247, 249);
+  --surface: rgb(255, 255, 255);
+  --error: rgb(176, 0, 32);
+  --on-primary: rgb(255, 255, 255);
+  --on-secondary: rgb(255, 255, 255);
+  --on-background: rgb(198, 198, 198);
+  --on-surface: rgb(30, 37, 48);
+  --on-error: rgb(255, 255, 255);
+  --shadow: rgba(0, 0, 0, 0.205);
+  --scrollbar-width: 8px;
+}
+
+.dark {
+  /* --primary: rgb(95, 186, 99); */
+  --background: rgb(48, 54, 47);
+  --surface: rgb(255, 251, 219);
+  --on-background: rgb(255, 251, 219);
+  --on-surface: rgb(48, 54, 47);
+  --shadow: rgb(51, 51, 51);
+}
+
 @layer base {
   html,
   body,
   #__next {
-    @apply w-full h-full;
+    @apply h-full w-full font-poppins;
   }
+
+  code {
+    @apply font-cascadia-code;
+  }
+  h1 {
+    @apply font-poppins-bold text-3xl text-theme-on-surface md:text-3xl lg:text-5xl;
+  }
+  h2 {
+    @apply font-poppins-medium text-2xl text-theme-on-surface md:text-2xl lg:text-4xl;
+  }
+  h3 {
+    @apply text-xl font-medium text-theme-on-surface md:text-xl lg:text-3xl;
+  }
+  h4 {
+    @apply text-lg font-medium text-theme-on-surface;
+  }
+  p {
+    @apply font-poppins text-sm text-theme-on-surface md:text-base lg:text-lg;
+  }
+  span {
+    @apply flex items-center text-theme-on-surface;
+  }
+  ul {
+    @apply list-inside list-disc text-theme-on-surface;
+  }
+
+  kbd {
+    display: inline-block;
+    background: linear-gradient(
+      143deg,
+      rgb(224, 224, 224) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
+    box-shadow: 0 3px 0px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff inset;
+    color: rgb(126, 126, 126);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 0.4em 0.8em;
+    margin: 0 0.2em;
+  }
+
+  svg {
+    @apply cursor-pointer;
+  }
+}
+
+.textField {
+  @apply h-full w-[400px] cursor-pointer appearance-none border-[2px] border-theme-surface bg-theme-surface pl-6 text-theme-on-surface focus:border-theme-primary;
+
+  background-image: url("../../public/icons/carret-down.svg");
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  background-position: calc(100% - 16px);
 }

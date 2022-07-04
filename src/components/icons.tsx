@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { ClassType, FC, ReactElement, SVGAttributes } from "react"
 
 interface IconProps {
   title?: string
@@ -42,6 +42,109 @@ export const ReceiptFilledIcon: FC<IconProps> = props => (
     </svg>
   </span>
 )
+export const CatalogueIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      xmlns="http://www.w3.org/2000/svg"
+      width="34.31"
+      height="28.521"
+      viewBox="0 0 34.31 28.521">
+      <path
+        id="Icon_awesome-store"
+        d="M33.535,6.607,29.92.836A1.783,1.783,0,0,0,28.41,0H5.906A1.783,1.783,0,0,0,4.4.836L.781,6.607c-1.866,2.98-.212,7.125,3.275,7.6a5.789,5.789,0,0,0,.763.05A5.5,5.5,0,0,0,8.93,12.411a5.5,5.5,0,0,0,8.222,0,5.5,5.5,0,0,0,8.222,0,5.519,5.519,0,0,0,4.111,1.844,5.727,5.727,0,0,0,.763-.05C33.747,13.737,35.407,9.592,33.535,6.607ZM29.5,16.043a7.068,7.068,0,0,1-1.643-.212v5.559H6.463V15.831a7.38,7.38,0,0,1-1.643.212,7.516,7.516,0,0,1-1-.067,7.005,7.005,0,0,1-.914-.2V26.738a1.781,1.781,0,0,0,1.783,1.783H29.641a1.781,1.781,0,0,0,1.783-1.783V15.776a5.687,5.687,0,0,1-.914.2A7.747,7.747,0,0,1,29.5,16.043Z"
+        transform="translate(-0.004)"
+      />
+    </svg>
+  </span>
+)
+export const DeleteIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      width="46"
+      height="46"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 6h18"></path>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    </svg>
+  </span>
+)
+export const EditIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      width="46"
+      height="46"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>
+  </span>
+)
+export const PlusIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      width="46"
+      height="46"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 5v14"></path>
+      <path d="M5 12h14"></path>
+    </svg>
+  </span>
+)
+export const MinusIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      clipRule="evenodd"
+      fillRule="evenodd"
+      strokeLinejoin="round"
+      strokeMiterlimit="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="m21 11.75c0-.414-.336-.75-.75-.75h-16.5c-.414 0-.75.336-.75.75s.336.75.75.75h16.5c.414 0 .75-.336.75-.75z"
+        fillRule="nonzero"
+      />
+    </svg>
+  </span>
+)
+export const StoreIcon: FC<IconProps> = props => (
+  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
+    <svg
+      className={props.svgClass}
+      xmlns="http://www.w3.org/2000/svg"
+      width="34.31"
+      height="34.309"
+      viewBox="0 0 34.31 34.309">
+      <path
+        id="Icon_awesome-cash-register"
+        d="M34.248,25.383,32.459,14.662a2.145,2.145,0,0,0-2.118-1.789h-16.4V8.584h6.433a1.075,1.075,0,0,0,1.072-1.072V1.072A1.075,1.075,0,0,0,20.371,0H3.216A1.075,1.075,0,0,0,2.144,1.072V7.505A1.075,1.075,0,0,0,3.216,8.577H9.649v4.289H3.96a2.15,2.15,0,0,0-2.118,1.789L.053,25.377a4.157,4.157,0,0,0-.06.7v6.084a2.142,2.142,0,0,0,2.144,2.144h30.02A2.142,2.142,0,0,0,34.3,32.165V26.087A3.557,3.557,0,0,0,34.248,25.383ZM18.762,16.618a1.075,1.075,0,0,1,1.072-1.072h1.072a1.075,1.075,0,0,1,1.072,1.072v1.072a1.075,1.075,0,0,1-1.072,1.072H19.835a1.075,1.075,0,0,1-1.072-1.072Zm-2.144,4.289H17.69a1.075,1.075,0,0,1,1.072,1.072v1.072a1.075,1.075,0,0,1-1.072,1.072H16.618a1.075,1.075,0,0,1-1.072-1.072V21.979A1.075,1.075,0,0,1,16.618,20.907Zm-2.144-5.361a1.075,1.075,0,0,1,1.072,1.072v1.072a1.075,1.075,0,0,1-1.072,1.072H13.4a1.075,1.075,0,0,1-1.072-1.072V16.618A1.075,1.075,0,0,1,13.4,15.546ZM5.36,5.361V3.216H18.226V5.361Zm2.68,13.4H6.969A1.075,1.075,0,0,1,5.9,17.691V16.618a1.075,1.075,0,0,1,1.072-1.072H8.041a1.075,1.075,0,0,1,1.072,1.072v1.072A1.075,1.075,0,0,1,8.041,18.763Zm1.072,4.289V21.979a1.075,1.075,0,0,1,1.072-1.072h1.072a1.075,1.075,0,0,1,1.072,1.072v1.072a1.075,1.075,0,0,1-1.072,1.072H10.185A1.075,1.075,0,0,1,9.113,23.051Zm14.474,7.505a.538.538,0,0,1-.536.536H11.257a.538.538,0,0,1-.536-.536V29.484a.538.538,0,0,1,.536-.536H23.051a.538.538,0,0,1,.536.536ZM25.2,23.051a1.075,1.075,0,0,1-1.072,1.072H23.051a1.075,1.075,0,0,1-1.072-1.072V21.979a1.075,1.075,0,0,1,1.072-1.072h1.072A1.075,1.075,0,0,1,25.2,21.979Zm3.216-5.361a1.075,1.075,0,0,1-1.072,1.072H26.267A1.075,1.075,0,0,1,25.2,17.691V16.618a1.075,1.075,0,0,1,1.072-1.072H27.34a1.075,1.075,0,0,1,1.072,1.072Z"
+        transform="translate(0.007)"
+      />
+    </svg>
+  </span>
+)
 export const RightArrowIcon: FC<IconProps> = props => (
   <span title={props.title} onClick={props.onClick} className={props.spanClass}>
     <svg
@@ -75,49 +178,6 @@ export const FileIcon: FC<IconProps> = props => (
       height="24"
       viewBox="0 0 24 24">
       <path d="M14.568.075c2.202 1.174 5.938 4.883 7.432 6.881-1.286-.9-4.044-1.657-6.091-1.179.222-1.468-.185-4.534-1.341-5.702zm-.824 7.925s1.522-8-3.335-8h-8.409v24h20v-13c0-3.419-5.247-3.745-8.256-3z" />
-    </svg>
-  </span>
-)
-export const FolderIcon: FC<IconProps> = props => (
-  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
-    <svg
-      className={props.svgClass}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24">
-      <path d="M24 22h-24v-14h7.262c1.559 0 2.411-.708 5.07-3h11.668v17zm-16.738-16c.64 0 1.11-.271 2.389-1.34l-2.651-2.66h-7v4h7.262z" />
-    </svg>
-  </span>
-)
-export const FolderOpenIcon: FC<IconProps> = props => (
-  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
-    <svg
-      className={props.svgClass}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24">
-      <path d="M2 9l-1-7h5.694c1.265 1.583 1.327 2 3.306 2h13l-1 5h-4.193l-3.9-3-1.464 1.903 1.428 1.097h-1.971l-3.9-3-2.307 3h-3.693zm-2 2l2 11h20l2-11h-24z" />
-    </svg>
-  </span>
-)
-export const GithubIcon: FC<IconProps> = props => (
-  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
-    <svg
-      className={props.svgClass}
-      enableBackground="new 0 0 32 32"
-      width="46"
-      height="46"
-      id="Layer_1"
-      version="1.0"
-      viewBox="0 0 32 32"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        clipRule="evenodd"
-        d="M16.003,0C7.17,0,0.008,7.162,0.008,15.997  c0,7.067,4.582,13.063,10.94,15.179c0.8,0.146,1.052-0.328,1.052-0.752c0-0.38,0.008-1.442,0-2.777  c-4.449,0.967-5.371-2.107-5.371-2.107c-0.727-1.848-1.775-2.34-1.775-2.34c-1.452-0.992,0.109-0.973,0.109-0.973  c1.605,0.113,2.451,1.649,2.451,1.649c1.427,2.443,3.743,1.737,4.654,1.329c0.146-1.034,0.56-1.739,1.017-2.139  c-3.552-0.404-7.286-1.776-7.286-7.906c0-1.747,0.623-3.174,1.646-4.292C7.28,10.464,6.73,8.837,7.602,6.634  c0,0,1.343-0.43,4.398,1.641c1.276-0.355,2.645-0.532,4.005-0.538c1.359,0.006,2.727,0.183,4.005,0.538  c3.055-2.07,4.396-1.641,4.396-1.641c0.872,2.203,0.323,3.83,0.159,4.234c1.023,1.118,1.644,2.545,1.644,4.292  c0,6.146-3.74,7.498-7.304,7.893C19.479,23.548,20,24.508,20,26c0,2,0,3.902,0,4.428c0,0.428,0.258,0.901,1.07,0.746  C27.422,29.055,32,23.062,32,15.997C32,7.162,24.838,0,16.003,0z"
-        fillRule="evenodd"
-      />
     </svg>
   </span>
 )
@@ -229,24 +289,6 @@ export const CaretDownIcon: FC<IconProps> = props => (
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg">
       <path d="m16.843 10.211c.108-.141.157-.3.157-.456 0-.389-.306-.755-.749-.755h-8.501c-.445 0-.75.367-.75.755 0 .157.05.316.159.457 1.203 1.554 3.252 4.199 4.258 5.498.142.184.36.29.592.29.23 0 .449-.107.591-.291 1.002-1.299 3.044-3.945 4.243-5.498z" />
-    </svg>
-  </span>
-)
-export const RotateIcon: FC<IconProps> = props => (
-  <span title={props.title} onClick={props.onClick} className={props.spanClass}>
-    <svg
-      className={props.svgClass}
-      width="46"
-      height="46"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="3"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path d="M19.734 16.06a8.923 8.923 0 0 1-3.915 3.978 8.706 8.706 0 0 1-5.471.832 8.795 8.795 0 0 1-4.887-2.64 9.067 9.067 0 0 1-2.388-5.079 9.136 9.136 0 0 1 1.044-5.53 8.904 8.904 0 0 1 4.069-3.815 8.7 8.7 0 0 1 5.5-.608c1.85.401 3.366 1.313 4.62 2.755.151.16.735.806 1.22 1.781"></path>
-      <path d="m15.069 7.813 5.04.907L21 3.59"></path>
     </svg>
   </span>
 )

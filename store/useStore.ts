@@ -2,7 +2,7 @@ import { useLayoutEffect } from "react"
 import createContext from "zustand/context"
 import create, { UseBoundStore } from "zustand"
 import { combine } from "zustand/middleware"
-import createCartSlice, { CartSlice } from "./createCartSlice"
+import createProductSlice, { StoreSlice } from "./createProductSlice"
 
 let store: any
 
@@ -11,11 +11,13 @@ type UseStoreState = typeof initializeStore extends (
   ...args: never
 ) => UseBoundStore<infer T>
   ? T
-  : CartSlice
+  : StoreSlice
 
-const getDefaultInitialState = (): CartSlice => ({
+const getDefaultInitialState = (): StoreSlice => ({
   state: "idle",
-  cart: []
+  cart: [],
+  products: [],
+  receipts: [],
 })
 
 const zustandContext = createContext<UseStoreState>()
@@ -25,7 +27,7 @@ export const useStore = zustandContext.useStore
 export const initializeStore = (preloadedState = {}) => {
   return create(
     combine({ ...getDefaultInitialState(), ...preloadedState }, (set, get) => ({
-      ...createCartSlice(set, get),
+      ...createProductSlice(set, get),
     }))
   )
 }

@@ -9,19 +9,29 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import { firestoreDB } from "../../../firebaseConfig"
-import { Product } from "./product"
 
 let receipts: TReceipts = []
 
 const CartProduct = z.object({
-  id: z.number(),
   quantity: z.number(),
-  product: Product
+  product: z.object({
+    id: z.string().optional(),
+    name: z.string(),
+    price: z.number(),
+    image: z.string(),
+    category: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+  }),
 })
 
 const Receipt = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   products: z.array(CartProduct),
+  total: z.number(),
+  cashier: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 })
 const Receipts = z.array(Receipt)
 
@@ -53,7 +63,7 @@ export const receiptRouter = createRouter()
       )
     },
   })
-  .mutation("add", {
+  .mutation("create", {
     input: z.object({ receipt: Receipt }),
     async resolve({ input }) {
       await addDoc(receiptssCollection, input.receipt).then(d => console.log(d))
@@ -72,5 +82,6 @@ export const receiptRouter = createRouter()
     },
   })
 
-type TReceipt = z.infer<typeof Receipt>
-type TReceipts = z.infer<typeof Receipts>
+export type TReceipt = z.infer<typeof Receipt>
+export type TReceipts = z.infer<typeof Receipts>
+export type TCartProduct = z.infer<typeof CartProduct>

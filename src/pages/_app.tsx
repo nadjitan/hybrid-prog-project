@@ -5,6 +5,7 @@ import { AppRouter } from "./api/trpc/[trpc]"
 import { SessionProvider } from "next-auth/react"
 import { useCreateStore, Provider } from "../../store/useStore"
 import "../styles/globals.css"
+import SideNav from "../components/layouts/SideNav"
 
 const MyApp: AppType = ({
   Component,
@@ -14,7 +15,9 @@ const MyApp: AppType = ({
   return (
     <Provider createStore={createStore}>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <SideNav>
+          <Component {...pageProps} />
+        </SideNav>
       </SessionProvider>
     </Provider>
   )

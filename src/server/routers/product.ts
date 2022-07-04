@@ -13,12 +13,11 @@ import { firestoreDB } from "../../../firebaseConfig"
 let products: TProducts = []
 
 export const Product = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: z.string(),
   price: z.number(),
-  description: z.string(),
+  quantity: z.number(),
   image: z.string(),
-  inStock: z.boolean(),
   category: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
