@@ -1,6 +1,12 @@
+import { collection, getDocs } from "firebase/firestore"
 import { GetState, SetState } from "zustand"
+import { firestoreDB } from "../firebaseConfig"
 import { TProduct, TProducts } from "../src/server/routers/product"
-import { TCartProduct, TReceipts } from "../src/server/routers/receipt"
+import {
+  TCartProduct,
+  TReceipt,
+  TReceipts,
+} from "../src/server/routers/receipt"
 
 export interface StoreSlice {
   state: "idle" | "fetching" | "error"
@@ -8,6 +14,9 @@ export interface StoreSlice {
   products: TProducts
   receipts: TReceipts
 }
+
+const productsCollection = collection(firestoreDB, "products")
+const receiptssCollection = collection(firestoreDB, "receipts")
 
 const createProductSlice = (
   set: SetState<StoreSlice>,
@@ -17,8 +26,26 @@ const createProductSlice = (
   products: [] as TProducts,
   receipts: [] as TReceipts,
 
-  setProducts: (products: TProducts) => set(state => ({ products: products })),
-  setReceipts: (receipts: TReceipts) => set(state => ({ receipts: receipts })),
+  getProducts: () => get().products,
+
+  fetchProdsRecs: async () => {
+    await getDocs(productsCollection).then(data => {
+      let products = data.docs.map(item => {
+        return { ...item.data(), id: item.id } as TProduct
+      })
+      set(state => ({ products }))
+    })
+
+    await getDocs(receiptssCollection).then(data => {
+      let receipts = data.docs.map(item => {
+        return { ...item.data(), id: item.id } as TReceipt
+      })
+      set(state => ({ receipts }))
+    })
+  },
+
+  setProducts: (products: TProducts) => set(state => ({ products })),
+  setReceipts: (receipts: TReceipts) => set(state => ({ receipts })),
   clearCart: () => set(state => ({ cart: [] })),
 
   getCartTotal: () =>
@@ -28,16 +55,14 @@ const createProductSlice = (
     ),
 
   addProduct: (newProduct: TProduct) => {
-    const { quantity, ...newCartProduct } = newProduct
-
-    if (!get().cart.find(cProd => cProd.product.id === newCartProduct.id)) {
+    if (!get().cart.find(cProd => cProd.product.id === newProduct.id)) {
       set(state => ({
-        cart: [...state.cart, { product: newCartProduct, quantity: 1 }],
+        cart: [...state.cart, { product: newProduct, quantity: 1 }],
       }))
     } else {
       set(state => ({
         cart: state.cart.map(({ product, quantity }) => {
-          if (product.id === newCartProduct.id) {
+          if (product.id === newProduct.id && quantity < newProduct.quantity) {
             return { product, quantity: quantity + 1 }
           }
 
@@ -56,7 +81,9 @@ const createProductSlice = (
     set(state => ({
       cart: state.cart.map(({ product, quantity }) => {
         if (product.id === id) {
-          return { product, quantity: quantity + 1 }
+          if (quantity < product.quantity) {
+            return { product, quantity: quantity + 1 }
+          }
         }
 
         return { product, quantity }

@@ -5,24 +5,14 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
   updateDoc,
 } from "firebase/firestore"
 import { firestoreDB } from "../../../firebaseConfig"
-
-let receipts: TReceipts = []
+import { Product } from "./product"
 
 const CartProduct = z.object({
   quantity: z.number(),
-  product: z.object({
-    id: z.string().optional(),
-    name: z.string(),
-    price: z.number(),
-    image: z.string(),
-    category: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-  }),
+  product: Product,
 })
 
 const Receipt = z.object({
@@ -38,21 +28,6 @@ const Receipts = z.array(Receipt)
 const receiptssCollection = collection(firestoreDB, "receipts")
 
 export const receiptRouter = createRouter()
-  .query("fetchAll", {
-    async resolve() {
-      await getDocs(receiptssCollection).then(data => {
-        receipts = data.docs.map(item => {
-          return { ...item.data(), id: item.id } as TReceipt
-        })
-      })
-    },
-  })
-  .query("list", {
-    output: Receipts,
-    resolve() {
-      return receipts
-    },
-  })
   .mutation("delete", {
     input: z.object({
       id: z.string(),

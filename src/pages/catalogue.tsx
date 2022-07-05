@@ -1,33 +1,27 @@
-import { NextPage } from "next"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
 import { DeleteIcon, EditIcon, PlusIcon } from "../components/icons"
-import { TProduct } from "../server/routers/product"
+import SideNav from "../components/layouts/SideNav"
+import { TProduct, TProducts } from "../server/routers/product"
 import { trpc } from "../utils/trpc"
+import { NextPageWithLayout } from "./_app"
 
-const Catalogue: NextPage = () => {
-  trpc.useQuery(["product.fetchAll"])
+const Catalogue: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const [newProduct, setNewProduct] = useState<TProduct>()
   const [selectedProduct, setSelectedProduct] = useState<TProduct>()
-  const { state, products, setProducts } = useStore()
-  const productsFetched = trpc.useQuery(["product.list"])
+
+  const { state, products, getProducts, setProducts, fetchProdsRecs } =
+    useStore()
+
   const productCreate = trpc.useMutation(["product.create"])
   const productDelete = trpc.useMutation(["product.delete"])
+  const productEdit = trpc.useMutation(["product.edit"])
 
-  useEffect(() => {
-    if (
-      productsFetched.data?.length! > 0 &&
-      productsFetched.data !== undefined
-    ) {
-      setProducts(productsFetched.data)
-    }
-  }, [productsFetched.data])
-
-  const handleAddProduct = () => {
+  const addProduct = () => {
     if (
       newProduct !== undefined &&
       newProduct.name !== undefined &&
@@ -36,15 +30,39 @@ const Catalogue: NextPage = () => {
       newProduct.quantity !== undefined &&
       newProduct.image !== undefined
     ) {
+      const builtProduct = {
+        ...newProduct,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
       productCreate.mutate({
-        product: {
-          ...newProduct,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
+        product: builtProduct,
+      })
+      fetchProdsRecs()
+      setShowModal(false)
+    }
+  }
+
+  const editProduct = () => {
+    if (
+      newProduct !== undefined &&
+      newProduct.name !== undefined &&
+      newProduct.category !== undefined &&
+      newProduct.price !== undefined &&
+      newProduct.quantity !== undefined &&
+      newProduct.image !== undefined
+    ) {
+      productEdit.mutate({
+        id: newProduct!.id!,
+        product: newProduct,
       })
 
       setShowModal(false)
+      setEditModal(false)
+      setProducts(
+        getProducts().map(p => (p.id === newProduct.id ? newProduct : p))
+      )
+      setNewProduct({} as TProduct)
     }
   }
 
@@ -52,6 +70,8 @@ const Catalogue: NextPage = () => {
     productDelete.mutate({ id: selectedProduct?.id! })
     setSelectedProduct(undefined)
     setShowModal(false)
+    setDeleteModal(false)
+    setProducts(getProducts().filter(prod => prod.id !== selectedProduct!.id))
   }
 
   return (
@@ -85,13 +105,18 @@ const Catalogue: NextPage = () => {
                     </button>
                     <button
                       className="col-span-6 mt-4 block w-full rounded-full border-[2px] border-theme-primary bg-theme-primary p-2.5 font-poppins-medium text-sm text-theme-surface"
-                      onClick={() => setShowModal(false)}>
+                      onClick={() => {
+                        setNewProduct(undefined)
+                        setShowModal(false)
+                      }}>
                       Cancel
                     </button>
                   </>
                 ) : (
                   <>
-                    <h4 className="font-poppins-medium">Add Product</h4>
+                    <h4 className="font-poppins-medium">
+                      {editModal ? "Edit Product" : "Add Product"}
+                    </h4>
 
                     <form className="mt-6 grid grid-cols-6 gap-4">
                       <div className="col-span-6">
@@ -102,6 +127,7 @@ const Catalogue: NextPage = () => {
                         </label>
 
                         <input
+                          defaultValue={editModal ? newProduct!.name : ""}
                           onChange={e =>
                             setNewProduct({
                               ...newProduct!,
@@ -123,6 +149,7 @@ const Catalogue: NextPage = () => {
                         </label>
 
                         <input
+                          defaultValue={editModal ? newProduct!.category : ""}
                           onChange={e =>
                             setNewProduct({
                               ...newProduct!,
@@ -142,14 +169,23 @@ const Catalogue: NextPage = () => {
                         </label>
 
                         <input
+                          defaultValue={editModal ? newProduct!.price : ""}
                           onChange={e =>
                             setNewProduct({
                               ...newProduct!,
                               price: parseInt(e.target.value),
                             })
                           }
-                          className="box-border w-full rounded-full border p-2.5 pl-6 text-sm focus:border-theme-primary"
                           type="number"
+                          min="1"
+                          onKeyDown={e => {
+                            const val = (e.target as HTMLInputElement).value
+
+                            if (!/[0-9]/.test(e.key)) e.preventDefault()
+
+                            if (val.toString().length === 6) e.preventDefault()
+                          }}
+                          className="box-border w-full rounded-full border p-2.5 pl-6 text-sm focus:border-theme-primary"
                           id="price"
                           placeholder="Enter price"
                         />
@@ -163,14 +199,23 @@ const Catalogue: NextPage = () => {
                         </label>
 
                         <input
+                          defaultValue={editModal ? newProduct!.quantity : ""}
                           onChange={e =>
                             setNewProduct({
                               ...newProduct!,
                               quantity: parseInt(e.target.value),
                             })
                           }
-                          className="box-border w-full rounded-full border p-2.5 pl-6 text-sm focus:border-theme-primary"
                           type="number"
+                          min="1"
+                          onKeyDown={e => {
+                            const val = (e.target as HTMLInputElement).value
+
+                            if (!/[0-9]/.test(e.key)) e.preventDefault()
+
+                            if (val.toString().length === 6) e.preventDefault()
+                          }}
+                          className="box-border w-full rounded-full border p-2.5 pl-6 text-sm focus:border-theme-primary"
                           id="quantity"
                           placeholder="Enter quantity"
                         />
@@ -206,9 +251,11 @@ const Catalogue: NextPage = () => {
                         type="submit"
                         onClick={e => {
                           e.preventDefault()
-                          handleAddProduct()
+
+                          if (editModal) editProduct()
+                          else addProduct()
                         }}>
-                        Add Product
+                        {editModal ? "Edit Product" : "Add Product"}
                       </button>
 
                       <button
@@ -232,7 +279,7 @@ const Catalogue: NextPage = () => {
       <div className="box-border flex h-full max-h-screen min-h-screen w-full flex-col bg-theme-background pt-[2.8rem] pl-11 pr-11 pb-11">
         <h3 className="h-max font-poppins-bold text-[1.4rem]">Catalogue</h3>
 
-        <div className="mt-[2.8rem] box-border grid max-h-full w-full overflow-hidden rounded-xl bg-theme-surface pt-[2.8rem] pl-11 pr-11 pb-11">
+        <div className="mt-[2.8rem] box-border grid max-h-full w-full overflow-y-auto overflow-x-hidden rounded-xl bg-theme-surface pt-[2.8rem] pl-11 pr-11 pb-11">
           <div className="flex h-14 w-full flex-row justify-between">
             <h3 className="h-max font-poppins-bold text-[1.4rem]">Products</h3>
             <button
@@ -261,9 +308,9 @@ const Catalogue: NextPage = () => {
                 <th className="w-44 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="flex h-[50vh] w-full flex-col items-center justify-between overflow-x-scroll overflow-y-scroll">
-              {products !== undefined && products.length > 0 ? (
-                products.map((prod, index) => (
+            <tbody className="flex h-[50vh] w-full flex-col items-center justify-between overflow-y-auto overflow-x-hidden">
+              {getProducts().length > 0 ? (
+                getProducts().map((prod, index) => (
                   <tr className="mb-4 flex w-full items-center" key={index}>
                     <td className="w-[250px]">{prod.id}</td>
                     <td className="w-[120px]">
@@ -290,7 +337,8 @@ const Catalogue: NextPage = () => {
                       <div className="flex flex-row justify-center gap-x-4">
                         <EditIcon
                           onClick={() => {
-                            setSelectedProduct(prod)
+                            setNewProduct(prod)
+                            setShowModal(true)
                             setEditModal(true)
                           }}
                           svgClass="stoke-theme-on-surface w-8 h-8"
@@ -299,6 +347,7 @@ const Catalogue: NextPage = () => {
                           svgClass="stoke-theme-on-surface w-8 h-8"
                           onClick={() => {
                             setSelectedProduct(prod)
+                            setShowModal(true)
                             setDeleteModal(true)
                           }}
                         />
@@ -318,5 +367,7 @@ const Catalogue: NextPage = () => {
     </>
   )
 }
+
+Catalogue.getLayout = (page: ReactElement) => <SideNav>{page}</SideNav>
 
 export default Catalogue

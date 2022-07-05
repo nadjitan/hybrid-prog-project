@@ -1,28 +1,17 @@
-import { NextPage } from "next"
+import { GetServerSideProps, NextPage } from "next"
+import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { ReactElement, useEffect, useState } from "react"
 import { useStore } from "../../../store/useStore"
-import { trpc } from "../../utils/trpc"
 import { CatalogueIcon, ReceiptFilledIcon, StoreIcon } from "../icons"
 
 const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
-  trpc.useQuery(["product.fetchAll"])
-  trpc.useQuery(["receipt.fetchAll"])
-  const products = trpc.useQuery(["product.list"])
-  const receipts = trpc.useQuery(["receipt.list"])
-  const { state, setProducts, setReceipts } = useStore()
-
+  const { data: session, status } = useSession()
+  const { fetchProdsRecs } = useStore()
   useEffect(() => {
-    if (products.data?.length! > 0 && products.data !== undefined) {
-      setProducts(products.data)
-    }
-  }, [products.data])
-  useEffect(() => {
-    if (receipts.data?.length! > 0 && receipts.data !== undefined) {
-      setReceipts(receipts.data)
-    }
-  }, [receipts.data])
+    fetchProdsRecs()
+  }, [])
 
   const router = useRouter()
   const [active, setActive] = useState<string>(
@@ -31,7 +20,7 @@ const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
 
   return (
     <main className="flex flex-row">
-      <nav className="flex min-w-[80px] flex-col items-center bg-theme-surface wide:min-w-[112px]">
+      <nav className="flex min-w-[80px] flex-col bg-theme-surface wide:min-w-[112px]">
         <div className="grid h-36 w-full place-items-center">
           <h3 className="font-prohibition text-[1.4rem] font-bold text-theme-primary wide:text-[1.8rem]">
             POS
@@ -83,6 +72,17 @@ const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
             />
           </a>
         </Link>
+
+        <div className="mt-auto mb-6 grid w-full place-items-center ">
+          <span className="mb-2 text-[0.8rem] text-theme-on-background wide:text-sm">
+            {session?.user.username}
+          </span>
+          <button
+            onClick={() => signOut()}
+            className="rounded-full border border-theme-primary bg-theme-surface px-3 py-[0.1rem] text-[0.8rem] text-sm text-theme-primary hover:bg-theme-primary hover:text-theme-surface wide:px-5 wide:text-center">
+            Logout
+          </button>
+        </div>
       </nav>
       {children}
     </main>

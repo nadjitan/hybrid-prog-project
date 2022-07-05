@@ -2,26 +2,24 @@ import { getToken } from "next-auth/jwt"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function middleware(req: any) {
-  if (req.nextUrl.pathname === "/") {
-    const session = await getToken({ req, secret: process.env.JWT_SECRET })
+  const session = await getToken({ req, secret: process.env.JWT_SECRET })
+  const pathname = req.nextUrl.pathname
+  const protectedRoutes = ["/", "/catalogue", "/sales-history"]
+
+  if (protectedRoutes.find(pn => pn === pathname)) {
     if (!session)
       return NextResponse.redirect(
-        `${
-          process.env.NEXT_PUBLIC_VERCEL_URL
-            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/auth/signin`
-            : "http://localhost:3000"
-        }/auth/signin`
+        process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/signin`
+          : "http://localhost:3000/auth/signin"
       )
   }
-  if (req.nextUrl.pathname === "/auth/signin") {
-    const session = await getToken({ req, secret: process.env.JWT_SECRET })
+  if (pathname === "/auth/signin") {
     if (session)
       return NextResponse.redirect(
-        `${
-          process.env.NEXT_PUBLIC_VERCEL_URL
-            ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/`
-            : "http://localhost:3000"
-        }/`
+        process.env.NEXT_PUBLIC_VERCEL_URL
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/`
+          : "http://localhost:3000/"
       )
   }
   return NextResponse.next()

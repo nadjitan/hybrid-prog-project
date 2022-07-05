@@ -109,6 +109,9 @@
   svg {
     @apply cursor-pointer;
   }
+  input:focus {
+    @apply border outline-none outline-theme-primary;
+  }
 }
 
 .textField {

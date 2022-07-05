@@ -1,18 +1,18 @@
-import type { NextPage } from "next"
-import { useSession, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import Head from "next/head"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
 import { DeleteIcon, MinusIcon, PlusIcon } from "../components/icons"
-import { TProducts } from "../server/routers/product"
-import { TReceipt } from "../server/routers/receipt"
+import SideNav from "../components/layouts/SideNav"
+import {  TProducts } from "../server/routers/product"
+import { TCartProduct, TReceipt } from "../server/routers/receipt"
 import { trpc } from "../utils/trpc"
+import { NextPageWithLayout } from "./_app"
 
-const Home: NextPage = () => {
-  const { data: session, status } = useSession()
+const Home: NextPageWithLayout = () => {
+  const { data: session } = useSession()
   const {
-    state,
     products,
     cart,
     addProduct,
@@ -21,10 +21,13 @@ const Home: NextPage = () => {
     decrementQty,
     getCartTotal,
     clearCart,
+    setProducts,
   } = useStore()
   const [filteredProducts, setFilteredProducts] = useState<TProducts>([])
   const [productsFound, setProductsFound] = useState(true)
+  const dropdownElem = useRef<HTMLSelectElement>(null)
   const receiptMutation = trpc.useMutation(["receipt.create"])
+  const productMutation = trpc.useMutation(["product.edit"])
 
   useEffect(() => {
     setFilteredProducts(products)
@@ -43,6 +46,7 @@ const Home: NextPage = () => {
 
   const search = (value: string) => {
     if (value !== "") {
+      dropdownElem.current!.value = "All"
       setFilteredProducts(
         products!.filter(
           prod =>
@@ -59,8 +63,35 @@ const Home: NextPage = () => {
   }
 
   const submitReceipt = (receipt: TReceipt) => {
-    clearCart()
-    receiptMutation.mutate({ receipt })
+    if (cart.length > 0) {
+      const cartProducts: TCartProduct[] = receipt.products.map(prod => {
+        const cartProduct: TCartProduct = {
+          quantity: prod.quantity,
+          product: {
+            ...prod.product,
+            quantity: prod.product.quantity - prod.quantity,
+          },
+        }
+        productMutation.mutate({
+          id: prod!.product.id!,
+          product: cartProduct.product,
+        })
+
+        return cartProduct
+      })
+
+      setProducts(
+        products.map(p => {
+          const found = cartProducts.find(cp => cp.product.id! === p.id!)
+          if (found) return found.product
+          else return p
+        })
+      )
+      clearCart()
+      receiptMutation.mutate({ receipt })
+    } else {
+      alert("Please add items in cart first...")
+    }
   }
   // const exampleData = trpc.useQuery(["example"]);
   // const { invalidateQueries } = trpc.useContext()
@@ -78,11 +109,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex max-h-screen min-h-screen w-full flex-row bg-theme-background">
-        <div className="box-border flex h-full w-full flex-col overflow-scroll pt-[2.8rem] pl-11 pr-11">
+        <div className="box-border flex h-full w-full flex-col overflow-hidden pt-[2.8rem] pl-11 pr-11">
           <h3 className="h-max font-poppins-bold text-[1.4rem]">Store</h3>
 
           <div className="mt-[2.8rem] flex h-14 flex-row">
-            <div className="mr-8 flex w-full overflow-hidden rounded-full border">
+            <div className="mr-8 flex w-full overflow-hidden rounded-full border focus-within:border-theme-primary">
               <input
                 onChange={e => search(e.target.value.toLowerCase())}
                 className="box-border h-full w-full bg-theme-background p-6 focus:bg-theme-surface"
@@ -98,6 +129,7 @@ const Home: NextPage = () => {
               onChange={e => filter(e.target.value)}
               className="textField"
               aria-label="All Categories"
+              ref={dropdownElem}
               defaultValue={"All"}>
               <option value="All">All Categories</option>
               <option value="Snacks">Snacks</option>
@@ -106,23 +138,47 @@ const Home: NextPage = () => {
             </select>
           </div>
 
-          <div className="pointer-events-auto mt-9 flex h-full w-full flex-wrap gap-8 overflow-scroll pb-8">
-            {products !== undefined && products.length > 0 ? (
+          <div className="pointer-events-auto mt-9 flex h-full w-full flex-wrap gap-8 overflow-y-auto overflow-x-hidden pb-8">
+            {products.length > 0 ? (
               filteredProducts!.map((prod, index) => (
                 <div
                   key={index}
-                  onClick={() => addProduct(prod)}
-                  className="box-border h-48 w-80 cursor-pointer rounded-xl bg-theme-surface p-5 shadow-md">
-                  <h4 className="w-full truncate font-poppins-medium text-sm">
+                  onClick={() => {
+                    if (prod.quantity > 0) addProduct(prod)
+                  }}
+                  className={`box-border h-48 w-80 rounded-xl bg-theme-surface p-5 ${
+                    prod.quantity === 0
+                      ? "border bg-theme-background"
+                      : "cursor-pointer shadow-md"
+                  }`}>
+                  <h4
+                    className={`w-full truncate font-poppins-medium text-sm ${
+                      prod.quantity === 0 && "text-theme-on-background"
+                    }`}>
                     {prod.name}
                   </h4>
-                  <p className="text-sm text-gray-400">ID: {prod.id}</p>
+                  <p
+                    className={`text-sm ${
+                      prod.quantity === 0
+                        ? "text-theme-on-background"
+                        : "text-gray-400"
+                    }`}>
+                    ID: {prod.id}
+                  </p>
 
                   <div className="mt-2 flex w-full flex-row items-end justify-between">
-                    <h4 className="font-poppins-medium text-theme-primary">
-                      P{prod.price}
+                    <h4
+                      className={`font-poppins-medium text-theme-primary ${
+                        prod.quantity === 0
+                          ? "text-theme-on-background text-gray-400"
+                          : "text-theme-primary"
+                      }`}>
+                      {prod.quantity === 0 ? "Out of Stock" : `P${prod.price}`}
                     </h4>
-                    <div className="h-max w-24 overflow-hidden rounded-lg shadow-md">
+                    <div
+                      className={`h-max w-24 overflow-hidden rounded-lg shadow-md ${
+                        prod.quantity === 0 && "grayscale"
+                      }`}>
                       <Image
                         src={prod.image}
                         placeholder={"empty"}
@@ -148,12 +204,14 @@ const Home: NextPage = () => {
         <div className="box-border flex h-full w-[700px] flex-col bg-theme-surface pl-11 pt-14 pr-11 pb-8">
           <div className="flex h-max items-center justify-between">
             <h3 className="font-poppins-bold text-[1.4rem]">Current Order</h3>
-            <button className="rounded-xl border-[2px] border-theme-primary bg-theme-surface px-9 py-4 text-center font-poppins-medium text-sm text-theme-primary hover:bg-theme-primary hover:text-theme-surface">
+            <button
+              onClick={() => clearCart()}
+              className="rounded-xl border-[2px] border-theme-primary bg-theme-surface px-9 py-4 text-center font-poppins-medium text-sm text-theme-primary hover:bg-theme-primary hover:text-theme-surface">
               Clear All
             </button>
           </div>
 
-          <div className="mt-4 flex h-full w-full flex-col gap-y-2 overflow-scroll">
+          <div className="mt-4 flex h-full w-full flex-col gap-y-2 overflow-y-auto overflow-x-hidden">
             {/* ITEM */}
 
             {cart.length > 0 ? (
@@ -225,7 +283,7 @@ const Home: NextPage = () => {
             <div className="mb-2 flex w-full flex-row justify-between">
               <h3 className="font-poppins-medium">Total</h3>
               <h3 className="font-poppins-medium text-theme-primary">
-                P{getCartTotal() + 119}
+                P{cart.length > 0 ? getCartTotal() + 119 : 0}
               </h3>
             </div>
 
@@ -248,5 +306,7 @@ const Home: NextPage = () => {
     </>
   )
 }
+
+Home.getLayout = (page: ReactElement) => <SideNav>{page}</SideNav>
 
 export default Home

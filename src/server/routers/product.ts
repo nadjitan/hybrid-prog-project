@@ -5,7 +5,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
   updateDoc,
 } from "firebase/firestore"
 import { firestoreDB } from "../../../firebaseConfig"
@@ -27,28 +26,13 @@ const Products = z.array(Product)
 const productsCollection = collection(firestoreDB, "products")
 
 export const productRouter = createRouter()
-  .query("fetchAll", {
-    async resolve() {
-      await getDocs(productsCollection).then(data => {
-        products = data.docs.map(item => {
-          return { ...item.data(), id: item.id } as TProduct
-        })
-      })
-    },
-  })
-  .query("list", {
-    output: Products,
-    resolve() {
-      return products
-    },
-  })
   .mutation("delete", {
     input: z.object({
       id: z.string(),
     }),
     async resolve({ input }) {
-      await deleteDoc(doc(firestoreDB, "products", input.id)).then(d =>
-        console.log(d)
+      await deleteDoc(doc(firestoreDB, "products", input.id)).then(
+        () => (products = products.filter(prod => prod.id !== input.id))
       )
     },
   })
