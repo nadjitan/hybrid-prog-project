@@ -5,8 +5,8 @@ import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
 import { DeleteIcon, MinusIcon, PlusIcon } from "../components/icons"
 import SideNav from "../components/layouts/SideNav"
-import {  TProducts } from "../server/routers/product"
-import { TCartProduct, TReceipt } from "../server/routers/receipt"
+import { TProducts } from "../server/routers/product"
+import { TReceipt } from "../server/routers/receipt"
 import { trpc } from "../utils/trpc"
 import { NextPageWithLayout } from "./_app"
 
@@ -21,7 +21,7 @@ const Home: NextPageWithLayout = () => {
     decrementQty,
     getCartTotal,
     clearCart,
-    setProducts,
+    fetchProducts,
   } = useStore()
   const [filteredProducts, setFilteredProducts] = useState<TProducts>([])
   const [productsFound, setProductsFound] = useState(true)
@@ -32,6 +32,9 @@ const Home: NextPageWithLayout = () => {
   useEffect(() => {
     setFilteredProducts(products)
   }, [products])
+  useEffect(() => {
+    if (productMutation.isSuccess) fetchProducts()
+  }, [productMutation.isSuccess])
 
   const filter = (value: string) => {
     if (value !== "All") {
@@ -64,29 +67,16 @@ const Home: NextPageWithLayout = () => {
 
   const submitReceipt = (receipt: TReceipt) => {
     if (cart.length > 0) {
-      const cartProducts: TCartProduct[] = receipt.products.map(prod => {
-        const cartProduct: TCartProduct = {
-          quantity: prod.quantity,
+      receipt.products.map(prod => {
+        productMutation.mutate({
+          id: prod!.product.id!,
           product: {
             ...prod.product,
             quantity: prod.product.quantity - prod.quantity,
           },
-        }
-        productMutation.mutate({
-          id: prod!.product.id!,
-          product: cartProduct.product,
         })
-
-        return cartProduct
       })
 
-      setProducts(
-        products.map(p => {
-          const found = cartProducts.find(cp => cp.product.id! === p.id!)
-          if (found) return found.product
-          else return p
-        })
-      )
       clearCart()
       receiptMutation.mutate({ receipt })
     } else {

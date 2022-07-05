@@ -1,4 +1,3 @@
-import { NextPage } from "next"
 import Image from "next/image"
 import { ReactElement, useEffect, useState } from "react"
 import { useStore } from "../../store/useStore"
@@ -10,10 +9,14 @@ import { NextPageWithLayout } from "./_app"
 
 const SalesHistory: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false)
-  const { state, receipts, fetchProdsRecs } = useStore()
+  const { receipts, fetchRecceipts } = useStore()
   const [selected, setSelected] = useState<TReceipt | undefined>()
   const [orderedList, setOrderedList] = useState<TReceipts>([])
   const receiptMutation = trpc.useMutation(["receipt.delete"])
+
+  useEffect(() => {
+    if (receiptMutation.isSuccess) fetchRecceipts()
+  }, [receiptMutation.isSuccess])
 
   useEffect(
     () =>
@@ -157,7 +160,7 @@ const SalesHistory: NextPageWithLayout = () => {
                   <th className="w-44 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="flex w-full flex-col items-center justify-between overflow-y-auto overflow-x-hidden">
+              <tbody className="flex h-[70vh] w-full flex-col items-center justify-between overflow-y-auto overflow-x-hidden">
                 {receipts !== undefined && receipts.length > 0 ? (
                   orderedList!.map((rec, index) => (
                     <tr

@@ -27,7 +27,6 @@ export default NextAuth({
             password: credentials!.password,
           },
         })
-        console.log(user)
 
         if (user) {
           return user

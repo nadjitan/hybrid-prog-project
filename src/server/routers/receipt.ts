@@ -33,15 +33,13 @@ export const receiptRouter = createRouter()
       id: z.string(),
     }),
     async resolve({ input }) {
-      await deleteDoc(doc(firestoreDB, "receipts", input.id)).then(d =>
-        console.log(d)
-      )
+      await deleteDoc(doc(firestoreDB, "receipts", input.id))
     },
   })
   .mutation("create", {
     input: z.object({ receipt: Receipt }),
     async resolve({ input }) {
-      await addDoc(receiptssCollection, input.receipt).then(d => console.log(d))
+      await addDoc(receiptssCollection, input.receipt)
     },
   })
   .mutation("edit", {
@@ -53,7 +51,7 @@ export const receiptRouter = createRouter()
       await updateDoc(
         doc(firestoreDB, "receipts", input.id),
         input.receipt
-      ).then(d => console.log(d))
+      )
     },
   })
 

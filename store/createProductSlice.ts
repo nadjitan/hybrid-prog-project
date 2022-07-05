@@ -26,21 +26,20 @@ const createProductSlice = (
   products: [] as TProducts,
   receipts: [] as TReceipts,
 
-  getProducts: () => get().products,
-
-  fetchProdsRecs: async () => {
+  fetchProducts: async () => {
     await getDocs(productsCollection).then(data => {
-      let products = data.docs.map(item => {
+      const newProducts = data.docs.map(item => {
         return { ...item.data(), id: item.id } as TProduct
       })
-      set(state => ({ products }))
+      set(state => ({ products: newProducts }))
     })
-
+  },
+  fetchRecceipts: async () => {
     await getDocs(receiptssCollection).then(data => {
-      let receipts = data.docs.map(item => {
+      const newReceipts = data.docs.map(item => {
         return { ...item.data(), id: item.id } as TReceipt
       })
-      set(state => ({ receipts }))
+      set(state => ({ receipts: newReceipts }))
     })
   },
 

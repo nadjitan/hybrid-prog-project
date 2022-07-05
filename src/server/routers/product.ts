@@ -38,8 +38,11 @@ export const productRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({ product: Product }),
+    output: z.object({ id: z.string() }),
     async resolve({ input }) {
-      await addDoc(productsCollection, input.product).then(d => console.log(d))
+      return {
+        id: (await addDoc(productsCollection, input.product)).id,
+      }
     },
   })
   .mutation("edit", {
@@ -51,7 +54,7 @@ export const productRouter = createRouter()
       await updateDoc(
         doc(firestoreDB, "products", input.id),
         input.product
-      ).then(d => console.log(d))
+      )
     },
   })
 

@@ -3,7 +3,7 @@ import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
 import { DeleteIcon, EditIcon, PlusIcon } from "../components/icons"
 import SideNav from "../components/layouts/SideNav"
-import { TProduct, TProducts } from "../server/routers/product"
+import { TProduct } from "../server/routers/product"
 import { trpc } from "../utils/trpc"
 import { NextPageWithLayout } from "./_app"
 
@@ -14,12 +14,20 @@ const Catalogue: NextPageWithLayout = () => {
   const [newProduct, setNewProduct] = useState<TProduct>()
   const [selectedProduct, setSelectedProduct] = useState<TProduct>()
 
-  const { state, products, getProducts, setProducts, fetchProdsRecs } =
-    useStore()
+  const { products, fetchProducts } = useStore()
 
   const productCreate = trpc.useMutation(["product.create"])
   const productDelete = trpc.useMutation(["product.delete"])
   const productEdit = trpc.useMutation(["product.edit"])
+
+  useEffect(() => {
+    if (
+      productCreate.isSuccess ||
+      productEdit.isSuccess ||
+      productDelete.isSuccess
+    )
+      fetchProducts()
+  }, [productCreate.isSuccess, productEdit.isSuccess, productDelete.isSuccess])
 
   const addProduct = () => {
     if (
@@ -38,7 +46,6 @@ const Catalogue: NextPageWithLayout = () => {
       productCreate.mutate({
         product: builtProduct,
       })
-      fetchProdsRecs()
       setShowModal(false)
     }
   }
@@ -59,9 +66,6 @@ const Catalogue: NextPageWithLayout = () => {
 
       setShowModal(false)
       setEditModal(false)
-      setProducts(
-        getProducts().map(p => (p.id === newProduct.id ? newProduct : p))
-      )
       setNewProduct({} as TProduct)
     }
   }
@@ -71,7 +75,6 @@ const Catalogue: NextPageWithLayout = () => {
     setSelectedProduct(undefined)
     setShowModal(false)
     setDeleteModal(false)
-    setProducts(getProducts().filter(prod => prod.id !== selectedProduct!.id))
   }
 
   return (
@@ -263,6 +266,7 @@ const Catalogue: NextPageWithLayout = () => {
                         type="reset"
                         onClick={e => {
                           e.preventDefault()
+                          setEditModal(false)
                           setShowModal(false)
                         }}>
                         Cancel
@@ -309,8 +313,8 @@ const Catalogue: NextPageWithLayout = () => {
               </tr>
             </thead>
             <tbody className="flex h-[50vh] w-full flex-col items-center justify-between overflow-y-auto overflow-x-hidden">
-              {getProducts().length > 0 ? (
-                getProducts().map((prod, index) => (
+              {products.length > 0 ? (
+                products.map((prod, index) => (
                   <tr className="mb-4 flex w-full items-center" key={index}>
                     <td className="w-[250px]">{prod.id}</td>
                     <td className="w-[120px]">

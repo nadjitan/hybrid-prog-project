@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from "next"
+import { NextPage } from "next"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -8,9 +8,10 @@ import { CatalogueIcon, ReceiptFilledIcon, StoreIcon } from "../icons"
 
 const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
   const { data: session, status } = useSession()
-  const { fetchProdsRecs } = useStore()
+  const { fetchProducts, fetchRecceipts } = useStore()
   useEffect(() => {
-    fetchProdsRecs()
+    fetchProducts()
+    fetchRecceipts()
   }, [])
 
   const router = useRouter()
