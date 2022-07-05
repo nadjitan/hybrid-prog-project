@@ -22,7 +22,7 @@ const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
   return (
     <main className="flex flex-row">
       <nav className="flex min-w-[80px] flex-col bg-theme-surface wide:min-w-[112px]">
-        <div className="grid h-36 w-full place-items-center">
+        <div className="grid h-32 w-full place-items-center">
           <h3 className="font-prohibition text-[1.4rem] font-bold text-theme-primary wide:text-[1.8rem]">
             POS
           </h3>

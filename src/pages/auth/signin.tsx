@@ -10,7 +10,7 @@ export default function SignIn() {
 
   return (
     <div className="grid h-full w-full place-items-center">
-      <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+      <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-lg transition-all sm:my-8 sm:w-full sm:max-w-lg">
         <div className="bg-white px-4 pt-8 pb-4 sm:p-6 sm:pb-6">
           <h1 className="w-full text-center text-theme-primary">LOGIN</h1>
           {error ?? <p>{error}</p>}
