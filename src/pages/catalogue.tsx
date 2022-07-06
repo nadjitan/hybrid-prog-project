@@ -1,7 +1,12 @@
 import Image from "next/image"
 import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
-import { DeleteIcon, EditIcon, PlusIcon } from "../components/icons"
+import {
+  DeleteIcon,
+  EditIcon,
+  LoadingIcon,
+  PlusIcon,
+} from "../components/icons"
 import SideNav from "../components/layouts/SideNav"
 import { TProduct } from "../server/routers/product"
 import { trpc } from "../utils/trpc"
@@ -77,8 +82,26 @@ const Catalogue: NextPageWithLayout = () => {
     setDeleteModal(false)
   }
 
+  function showLoading() {
+    if (
+      productCreate.isLoading ||
+      productDelete.isLoading ||
+      productEdit.isLoading
+    ) {
+      return (
+        <div className="absolute right-12 bottom-12 flex h-16 w-44 cursor-progress flex-row items-center justify-center rounded-xl bg-theme-surface shadow-lg">
+          <p className="mb-1 mr-2 font-poppins-medium text-sm text-theme-primary">
+            Sending
+          </p>
+          <LoadingIcon svgClass="h-full w-full stroke-theme-primary cursor-progress" />
+        </div>
+      )
+    }
+  }
+
   return (
     <>
+      {showLoading()}
       <div
         className={`relative z-10 ${showModal ? "block" : "hidden"}`}
         aria-labelledby="modal-title"

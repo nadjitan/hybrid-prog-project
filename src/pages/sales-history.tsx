@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { ReactElement, useEffect, useState } from "react"
 import { useStore } from "../../store/useStore"
-import { DeleteIcon } from "../components/icons"
+import { DeleteIcon, LoadingIcon } from "../components/icons"
 import SideNav from "../components/layouts/SideNav"
 import { TReceipt, TReceipts } from "../server/routers/receipt"
 import { trpc } from "../utils/trpc"
@@ -95,6 +95,14 @@ const SalesHistory: NextPageWithLayout = () => {
 
   return (
     <>
+      {receiptMutation.isLoading && (
+        <div className="absolute left-44 bottom-6 flex h-16 w-44 cursor-progress flex-row items-center justify-center rounded-xl bg-theme-surface shadow-lg">
+          <p className="mb-1 mr-2 font-poppins-medium text-sm text-theme-primary">
+            Sending
+          </p>
+          <LoadingIcon svgClass="h-full w-full stroke-theme-primary cursor-progress" />
+        </div>
+      )}
       <div
         className={`relative z-10 ${showModal ? "block" : "hidden"}`}
         aria-labelledby="modal-title"

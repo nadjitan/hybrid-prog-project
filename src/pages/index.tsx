@@ -3,7 +3,12 @@ import Head from "next/head"
 import Image from "next/image"
 import { ReactElement, useEffect, useRef, useState } from "react"
 import { useStore } from "../../store/useStore"
-import { DeleteIcon, MinusIcon, PlusIcon } from "../components/icons"
+import {
+  DeleteIcon,
+  LoadingIcon,
+  MinusIcon,
+  PlusIcon,
+} from "../components/icons"
 import SideNav from "../components/layouts/SideNav"
 import { TProducts } from "../server/routers/product"
 import { TReceipt } from "../server/routers/receipt"
@@ -277,19 +282,28 @@ const Home: NextPageWithLayout = () => {
               </h3>
             </div>
 
-            <button
-              onClick={() =>
-                submitReceipt({
-                  products: cart,
-                  total: getCartTotal(),
-                  cashier: session?.user.username!,
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                })
-              }
-              className="w-full rounded-full border-[2px] border-theme-primary bg-theme-primary py-2 text-theme-surface hover:bg-theme-surface hover:text-theme-primary">
-              Done
-            </button>
+            {!receiptMutation.isLoading ? (
+              <button
+                onClick={() =>
+                  submitReceipt({
+                    products: cart,
+                    total: getCartTotal(),
+                    cashier: session?.user.username!,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  })
+                }
+                className="h-12 w-full rounded-full border-[2px] border-theme-primary bg-theme-primary py-2 text-theme-surface hover:bg-theme-surface hover:text-theme-primary">
+                Done
+              </button>
+            ) : (
+              <button className="flex h-12 w-full cursor-progress flex-row items-center justify-center rounded-full border-[2px] border-theme-on-background py-2 ">
+                <p className="mb-1 mr-2 text-sm text-theme-on-background">
+                  Sending
+                </p>
+                <LoadingIcon svgClass="h-full w-full stroke-theme-on-background cursor-progress" />
+              </button>
+            )}
           </div>
         </div>
       </div>
