@@ -93,16 +93,22 @@ const SalesHistory: NextPageWithLayout = () => {
     }
   }
 
-  return (
-    <>
-      {receiptMutation.isLoading && (
+  function showLoading() {
+    if (receiptMutation.isLoading) {
+      return (
         <div className="absolute left-44 bottom-6 flex h-16 w-44 cursor-progress flex-row items-center justify-center rounded-xl bg-theme-surface shadow-lg">
           <p className="mb-1 mr-2 font-poppins-medium text-sm text-theme-primary">
             Sending
           </p>
           <LoadingIcon svgClass="h-full w-full stroke-theme-primary cursor-progress" />
         </div>
-      )}
+      )
+    }
+  }
+
+  return (
+    <>
+      {showLoading()}
       <div
         className={`relative z-10 ${showModal ? "block" : "hidden"}`}
         aria-labelledby="modal-title"
@@ -148,7 +154,7 @@ const SalesHistory: NextPageWithLayout = () => {
 
             <select
               onChange={e => arrangeReceipts(e.target.value)}
-              className="textField py-5"
+              className="select1 py-5"
               aria-label="Latest"
               defaultValue={"Latest"}>
               <option value="Latest">Latest</option>
@@ -168,7 +174,7 @@ const SalesHistory: NextPageWithLayout = () => {
                   <th className="w-44 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="flex h-[70vh] w-full flex-col items-center justify-between overflow-y-auto overflow-x-hidden">
+              <tbody className="flex h-[70vh] w-full flex-col items-center overflow-y-auto overflow-x-hidden">
                 {receipts !== undefined && receipts.length > 0 ? (
                   orderedList!.map((rec, index) => (
                     <tr
@@ -265,7 +271,7 @@ const SalesHistory: NextPageWithLayout = () => {
                   <p className="font-poppins-medium text-gray-400">
                     P
                     {selected !== undefined && selected.products.length > 0
-                      ? getTotal()! - 119
+                      ? getTotal()
                       : 0}
                   </p>
                 </div>
@@ -273,14 +279,16 @@ const SalesHistory: NextPageWithLayout = () => {
                   <p className="font-poppins-medium text-gray-400">
                     Sales Tax (12%)
                   </p>
-                  <p className="font-poppins-medium text-gray-400">P119.00</p>
+                  <p className="font-poppins-medium text-gray-400">
+                    P{0.12 * getTotal()!}
+                  </p>
                 </div>
                 <div className="mb-2 flex w-full flex-row justify-between">
                   <h3 className="font-poppins-medium">Total</h3>
                   <h3 className="font-poppins-medium text-theme-primary">
                     P
                     {selected !== undefined && selected.products.length > 0
-                      ? getTotal()!
+                      ? getTotal()! + 0.12 * getTotal()!
                       : 0}
                   </h3>
                 </div>

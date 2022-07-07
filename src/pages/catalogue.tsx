@@ -19,7 +19,7 @@ const Catalogue: NextPageWithLayout = () => {
   const [newProduct, setNewProduct] = useState<TProduct>()
   const [selectedProduct, setSelectedProduct] = useState<TProduct>()
 
-  const { products, fetchProducts } = useStore()
+  const { products, fetchProducts, fetchState } = useStore()
 
   const productCreate = trpc.useMutation(["product.create"])
   const productDelete = trpc.useMutation(["product.delete"])
@@ -97,6 +97,16 @@ const Catalogue: NextPageWithLayout = () => {
         </div>
       )
     }
+    if (fetchState === "fetching") {
+      return (
+        <div className="absolute right-12 bottom-12 flex h-16 w-44 cursor-progress flex-row items-center justify-center rounded-xl bg-theme-surface shadow-lg">
+          <p className="mb-1 mr-2 font-poppins-medium text-sm text-theme-primary">
+            Fetching
+          </p>
+          <LoadingIcon svgClass="h-full w-full stroke-theme-primary cursor-progress" />
+        </div>
+      )
+    }
   }
 
   return (
@@ -133,6 +143,7 @@ const Catalogue: NextPageWithLayout = () => {
                       className="col-span-6 mt-4 block w-full rounded-full border-[2px] border-theme-primary bg-theme-primary p-2.5 font-poppins-medium text-sm text-theme-surface"
                       onClick={() => {
                         setNewProduct(undefined)
+                        setDeleteModal(false)
                         setShowModal(false)
                       }}>
                       Cancel
@@ -174,19 +185,24 @@ const Catalogue: NextPageWithLayout = () => {
                           Category
                         </label>
 
-                        <input
-                          defaultValue={editModal ? newProduct!.category : ""}
+                        <select
                           onChange={e =>
                             setNewProduct({
                               ...newProduct!,
                               category: e.target.value,
                             })
                           }
-                          className="box-border w-full rounded-full border p-2.5 pl-6 text-sm"
-                          type="text"
-                          id="category"
-                          placeholder="Enter category"
-                        />
+                          className="select2"
+                          defaultValue={"DEFAULT"}>
+                          <option
+                            value="DEFAULT"
+                            className="text-theme-on-background">
+                            Pick a category...
+                          </option>
+                          <option value="Snacks">Snacks</option>
+                          <option value="Beverage">Beverage</option>
+                          <option value="Food">Food</option>
+                        </select>
                       </div>
 
                       <div className="col-span-3">

@@ -114,8 +114,16 @@
   }
 }
 
-.textField {
+.select1 {
   @apply h-full w-[400px] cursor-pointer appearance-none border-[2px] border-theme-surface bg-theme-surface pl-6 text-theme-on-surface focus:border-theme-primary;
+
+  background-image: url("../../public/icons/carret-down.svg");
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  background-position: calc(100% - 16px);
+}
+.select2 {
+  @apply box-border h-full w-full cursor-pointer appearance-none rounded-full border  border-gray-200 bg-theme-surface p-2.5 pl-6 text-sm text-theme-on-surface focus:border-theme-primary;
 
   background-image: url("../../public/icons/carret-down.svg");
   background-repeat: no-repeat;

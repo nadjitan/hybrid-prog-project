@@ -19,6 +19,7 @@ const Home: NextPageWithLayout = () => {
   const { data: session } = useSession()
   const {
     products,
+    fetchState,
     cart,
     addProduct,
     removeProduct,
@@ -27,6 +28,7 @@ const Home: NextPageWithLayout = () => {
     getCartTotal,
     clearCart,
     fetchProducts,
+    fetchRecceipts,
   } = useStore()
   const [filteredProducts, setFilteredProducts] = useState<TProducts>([])
   const [productsFound, setProductsFound] = useState(true)
@@ -38,7 +40,10 @@ const Home: NextPageWithLayout = () => {
     setFilteredProducts(products)
   }, [products])
   useEffect(() => {
-    if (productMutation.isSuccess) fetchProducts()
+    if (productMutation.isSuccess) {
+      fetchProducts()
+      fetchRecceipts()
+    }
   }, [productMutation.isSuccess])
 
   const filter = (value: string) => {
@@ -88,13 +93,42 @@ const Home: NextPageWithLayout = () => {
       alert("Please add items in cart first...")
     }
   }
-  // const exampleData = trpc.useQuery(["example"]);
-  // const { invalidateQueries } = trpc.useContext()
 
-  // createExample.mutate()
-  // const createExample = trpc.useMutation("create-example", {
-  //   onSuccess: () => invalidateQueries("example"),
-  // })
+  function loadingBtn() {
+    if (receiptMutation.isLoading) {
+      return (
+        <button className="flex h-12 w-full cursor-progress flex-row items-center justify-center rounded-full border-[2px] border-theme-on-background py-2 ">
+          <p className="mb-1 mr-2 text-sm text-theme-on-background">Sending</p>
+          <LoadingIcon svgClass="h-full w-full stroke-theme-on-background cursor-progress" />
+        </button>
+      )
+    }
+    if (fetchState === "fetching") {
+      return (
+        <button className="flex h-12 w-full cursor-progress flex-row items-center justify-center rounded-full border-[2px] border-theme-on-background py-2 ">
+          <p className="mb-1 mr-2 text-sm text-theme-on-background">Fetching</p>
+          <LoadingIcon svgClass="h-full w-full stroke-theme-on-background cursor-progress" />
+        </button>
+      )
+    }
+    if (fetchState === "idle") {
+      return (
+        <button
+          onClick={() =>
+            submitReceipt({
+              products: cart,
+              total: getCartTotal(),
+              cashier: session?.user.username!,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            })
+          }
+          className="h-12 w-full rounded-full border-[2px] border-theme-primary bg-theme-primary py-2 text-theme-surface hover:bg-theme-surface hover:text-theme-primary">
+          Done
+        </button>
+      )
+    }
+  }
 
   return (
     <>
@@ -122,7 +156,7 @@ const Home: NextPageWithLayout = () => {
 
             <select
               onChange={e => filter(e.target.value)}
-              className="textField"
+              className="select1"
               aria-label="All Categories"
               ref={dropdownElem}
               defaultValue={"All"}>
@@ -272,38 +306,19 @@ const Home: NextPageWithLayout = () => {
               <p className="font-poppins-medium text-gray-400">
                 Sales Tax (12%)
               </p>
-              <p className="font-poppins-medium text-gray-400">P119.00</p>
+              <p className="font-poppins-medium text-gray-400">
+                P{0.12 * getCartTotal()}
+              </p>
             </div>
 
             <div className="mb-2 flex w-full flex-row justify-between">
               <h3 className="font-poppins-medium">Total</h3>
               <h3 className="font-poppins-medium text-theme-primary">
-                P{cart.length > 0 ? getCartTotal() + 119 : 0}
+                P{cart.length > 0 ? getCartTotal() + 0.12 * getCartTotal() : 0}
               </h3>
             </div>
 
-            {!receiptMutation.isLoading ? (
-              <button
-                onClick={() =>
-                  submitReceipt({
-                    products: cart,
-                    total: getCartTotal(),
-                    cashier: session?.user.username!,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                  })
-                }
-                className="h-12 w-full rounded-full border-[2px] border-theme-primary bg-theme-primary py-2 text-theme-surface hover:bg-theme-surface hover:text-theme-primary">
-                Done
-              </button>
-            ) : (
-              <button className="flex h-12 w-full cursor-progress flex-row items-center justify-center rounded-full border-[2px] border-theme-on-background py-2 ">
-                <p className="mb-1 mr-2 text-sm text-theme-on-background">
-                  Sending
-                </p>
-                <LoadingIcon svgClass="h-full w-full stroke-theme-on-background cursor-progress" />
-              </button>
-            )}
+            {loadingBtn()}
           </div>
         </div>
       </div>

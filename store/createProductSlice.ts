@@ -9,7 +9,7 @@ import {
 } from "../src/server/routers/receipt"
 
 export interface StoreSlice {
-  state: "idle" | "fetching" | "error"
+  fetchState: "idle" | "fetching" | "error"
   cart: { product: TCartProduct["product"]; quantity: number }[]
   products: TProducts
   receipts: TReceipts
@@ -27,11 +27,13 @@ const createProductSlice = (
   receipts: [] as TReceipts,
 
   fetchProducts: async () => {
+    set(state => ({ fetchState: "fetching" }))
     await getDocs(productsCollection).then(data => {
       const newProducts = data.docs.map(item => {
         return { ...item.data(), id: item.id } as TProduct
       })
       set(state => ({ products: newProducts }))
+      set(state => ({ fetchState: "idle" }))
     })
   },
   fetchRecceipts: async () => {
