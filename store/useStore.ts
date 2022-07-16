@@ -14,7 +14,7 @@ type UseStoreState = typeof initializeStore extends (
   : StoreSlice
 
 const getDefaultInitialState = (): StoreSlice => ({
-  state: "idle",
+  fetchState: "idle",
   cart: [],
   products: [],
   receipts: [],

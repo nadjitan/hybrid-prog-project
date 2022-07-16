@@ -184,7 +184,7 @@ const Catalogue: NextPageWithLayout = () => {
                           htmlFor="category">
                           Category
                         </label>
-
+                        
                         <select
                           onChange={e =>
                             setNewProduct({
