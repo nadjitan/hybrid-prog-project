@@ -9,13 +9,13 @@ import { NextPageWithLayout } from "./_app"
 
 const SalesHistory: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false)
-  const { receipts, fetchRecceipts } = useStore()
+  const { receipts, fetchReceipts } = useStore()
   const [selected, setSelected] = useState<TReceipt | undefined>()
   const [orderedList, setOrderedList] = useState<TReceipts>([])
   const receiptMutation = trpc.useMutation(["receipt.delete"])
 
   useEffect(() => {
-    if (receiptMutation.isSuccess) fetchRecceipts()
+    if (receiptMutation.isSuccess) fetchReceipts()
   }, [receiptMutation.isSuccess])
 
   useEffect(

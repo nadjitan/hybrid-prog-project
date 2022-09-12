@@ -1,38 +1,27 @@
 import { useLayoutEffect } from "react"
 import createContext from "zustand/context"
 import create, { UseBoundStore } from "zustand"
-import { combine } from "zustand/middleware"
 import createProductSlice, { StoreSlice } from "./createProductSlice"
 
 let store: any
 
-type InitialState = ReturnType<typeof getDefaultInitialState>
 type UseStoreState = typeof initializeStore extends (
   ...args: never
 ) => UseBoundStore<infer T>
   ? T
   : StoreSlice
 
-const getDefaultInitialState = (): StoreSlice => ({
-  fetchState: "idle",
-  cart: [],
-  products: [],
-  receipts: [],
-})
-
 const zustandContext = createContext<UseStoreState>()
 export const Provider = zustandContext.Provider
 export const useStore = zustandContext.useStore
 
-export const initializeStore = (preloadedState = {}) => {
-  return create(
-    combine({ ...getDefaultInitialState(), ...preloadedState }, (set, get) => ({
-      ...createProductSlice(set, get),
-    }))
-  )
-}
+export const initializeStore = (preloadedState: StoreSlice) =>
+  create<StoreSlice>((...args) => ({
+    ...preloadedState,
+    ...createProductSlice(...args),
+  }))
 
-export const useCreateStore = (serverInitialState: InitialState) => {
+export const useCreateStore = (serverInitialState: StoreSlice) => {
   // For SSR & SSG, always use a new store.
   if (typeof window === "undefined") {
     return () => initializeStore(serverInitialState)

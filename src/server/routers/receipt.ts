@@ -25,7 +25,7 @@ const Receipt = z.object({
 })
 const Receipts = z.array(Receipt)
 
-const receiptssCollection = collection(firestoreDB, "receipts")
+const receiptsCollection = collection(firestoreDB, "receipts")
 
 export const receiptRouter = createRouter()
   .mutation("delete", {
@@ -39,7 +39,7 @@ export const receiptRouter = createRouter()
   .mutation("create", {
     input: z.object({ receipt: Receipt }),
     async resolve({ input }) {
-      await addDoc(receiptssCollection, input.receipt)
+      await addDoc(receiptsCollection, input.receipt)
     },
   })
   .mutation("edit", {
@@ -48,10 +48,7 @@ export const receiptRouter = createRouter()
       receipt: Receipt,
     }),
     async resolve({ input }) {
-      await updateDoc(
-        doc(firestoreDB, "receipts", input.id),
-        input.receipt
-      )
+      await updateDoc(doc(firestoreDB, "receipts", input.id), input.receipt)
     },
   })
 

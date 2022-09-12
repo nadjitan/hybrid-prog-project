@@ -8,10 +8,10 @@ import { CatalogueIcon, ReceiptFilledIcon, StoreIcon } from "../icons"
 
 const SideNav: NextPage<{ children: ReactElement }> = ({ children }) => {
   const { data: session, status } = useSession()
-  const { fetchProducts, fetchRecceipts } = useStore()
+  const { fetchProducts, fetchReceipts } = useStore()
   useEffect(() => {
     fetchProducts()
-    fetchRecceipts()
+    fetchReceipts()
   }, [])
 
   const router = useRouter()

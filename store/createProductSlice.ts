@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore"
-import { GetState, SetState } from "zustand"
+import { GetState, SetState, StateCreator } from "zustand"
 import { firestoreDB } from "../firebaseConfig"
 import { TProduct, TProducts } from "../src/server/routers/product"
 import {
@@ -8,46 +8,54 @@ import {
   TReceipts,
 } from "../src/server/routers/receipt"
 
+const productsCollection = collection(firestoreDB, "products")
+const receiptsCollection = collection(firestoreDB, "receipts")
+
 export interface StoreSlice {
   fetchState: "idle" | "fetching" | "error"
   cart: { product: TCartProduct["product"]; quantity: number }[]
   products: TProducts
   receipts: TReceipts
+  fetchProducts: () => Promise<void>
+  fetchReceipts: () => Promise<void>
+  setProducts: (products: TProducts) => void
+  setReceipts: (receipts: TReceipts) => void
+  clearCart: () => void
+  getCartTotal: () => number
+  addProduct: (newProduct: TProduct) => void
+  removeProduct: (id: string) => void
+  incrementQty: (id: string) => void
+  decrementQty: (id: string) => void
 }
 
-const productsCollection = collection(firestoreDB, "products")
-const receiptssCollection = collection(firestoreDB, "receipts")
-
-const createProductSlice = (
-  set: SetState<StoreSlice>,
-  get: GetState<StoreSlice>
-) => ({
-  cart: [] as StoreSlice["cart"],
-  products: [] as TProducts,
-  receipts: [] as TReceipts,
+const createProductSlice: StateCreator<StoreSlice> = (set, get) => ({
+  fetchState: "idle",
+  cart: [],
+  products: [],
+  receipts: [],
 
   fetchProducts: async () => {
-    set(state => ({ fetchState: "fetching" }))
+    set(_ => ({ fetchState: "fetching" }))
     await getDocs(productsCollection).then(data => {
       const newProducts = data.docs.map(item => {
         return { ...item.data(), id: item.id } as TProduct
       })
-      set(state => ({ products: newProducts }))
-      set(state => ({ fetchState: "idle" }))
+      set(_ => ({ products: newProducts }))
+      set(_ => ({ fetchState: "idle" }))
     })
   },
-  fetchRecceipts: async () => {
-    await getDocs(receiptssCollection).then(data => {
+  fetchReceipts: async () => {
+    await getDocs(receiptsCollection).then(data => {
       const newReceipts = data.docs.map(item => {
         return { ...item.data(), id: item.id } as TReceipt
       })
-      set(state => ({ receipts: newReceipts }))
+      set(_ => ({ receipts: newReceipts }))
     })
   },
 
-  setProducts: (products: TProducts) => set(state => ({ products })),
-  setReceipts: (receipts: TReceipts) => set(state => ({ receipts })),
-  clearCart: () => set(state => ({ cart: [] })),
+  setProducts: (products: TProducts) => set(_ => ({ products })),
+  setReceipts: (receipts: TReceipts) => set(_ => ({ receipts })),
+  clearCart: () => set(_ => ({ cart: [] })),
 
   getCartTotal: () =>
     get().cart.reduce(

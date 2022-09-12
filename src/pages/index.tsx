@@ -28,7 +28,7 @@ const Home: NextPageWithLayout = () => {
     getCartTotal,
     clearCart,
     fetchProducts,
-    fetchRecceipts,
+    fetchReceipts,
   } = useStore()
   const [filteredProducts, setFilteredProducts] = useState<TProducts>([])
   const [productsFound, setProductsFound] = useState(true)
@@ -42,7 +42,7 @@ const Home: NextPageWithLayout = () => {
   useEffect(() => {
     if (productMutation.isSuccess) {
       fetchProducts()
-      fetchRecceipts()
+      fetchReceipts()
     }
   }, [productMutation.isSuccess])
 
