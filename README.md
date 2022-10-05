@@ -9,10 +9,8 @@ A simple POS app made with NextJS for a course in CIIT
 
 ## Sample Images
 
-<div style="display: flex;">
-  <img src="./sample/login.jpeg" width="250" title="Login Page"/>
-  <img src="./sample/store.jpeg" width="250" title="Store Page"/>
-  <img src="./sample/catalogue.jpeg" width="250" title="Catalogue Page"/>
-  <img src="./sample/catalogue_modal.jpeg" width="250" title="Catalogue Modal"/>
-  <img src="./sample/sales.jpeg" width="250" title="Sales Page"/>
-</div>
+<img src="./sample/login.jpeg" title="Login Page"/>
+<img src="./sample/store.jpeg" title="Store Page"/>
+<img src="./sample/catalogue.jpeg" title="Catalogue Page"/>
+<img src="./sample/catalogue_modal.jpeg" title="Catalogue Modal"/>
+<img src="./sample/sales.jpeg" title="Sales Page"/>
